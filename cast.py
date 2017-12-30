@@ -6,9 +6,9 @@ class Cast(graphene.ObjectType):
      firstName = graphene.String()
      lastName = graphene.String()
      
-     sessions = graphene.List(lambda: Session)
-     hours = graphene.List(lambda: Hours)
+     # sessions = graphene.List(lambda: Session)
+     # hours = graphene.List(lambda: Hours)
 
-from session import Session
-from hours import Hours
+# from session import Session
+# from hours import Hours
 
