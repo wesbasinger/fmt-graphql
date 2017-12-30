@@ -7,6 +7,24 @@ from cast import Cast
 # from hours import Hours
 # from session import Session
 
+class AddSessionToCast(graphene.Mutation):
+    
+    updatedCast = graphene.Field(Cast)
+    
+    class Arguments:
+        
+        cast_id = graphene.String()
+        session_slug = graphene.String()
+        
+    def mutate(self, info, cast_id, session_slug):
+        
+        db.add_cast_to_session(cast_id, session_slug)
+        db.add_session_to_cast(cast_id, session_slug)
+        
+        cast=Cast(_id=cast_id)
+        
+        return AddSessionToCast(updatedCast=cast)
+        
 class CreateCast(graphene.Mutation):
     
     # instantiate an object to return
@@ -34,6 +52,8 @@ class Mutations(graphene.ObjectType):
     
     # put the mutation into the root mutation class
     createCast = CreateCast.Field()
+    
+    addSessionToCast = AddSessionToCast.Field()
         
 
 class Query(graphene.ObjectType):
