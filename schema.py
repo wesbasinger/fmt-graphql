@@ -7,6 +7,34 @@ from cast import Cast
 # from hours import Hours
 # from session import Session
 
+class CreateCast(graphene.Mutation):
+    
+    # instantiate an object to return
+    addedCast = graphene.Field(Cast)
+    
+    # pass in arguments
+    class Arguments:
+        
+        first_name = graphene.String()
+        last_name = graphene.String()
+    
+    # this function does the database insert, instantiates another
+    # Cast object and sets the first addedCast equal to the second cast
+    # that has new values in it
+    def mutate(self, info, first_name, last_name):
+        
+        result = db.add_new_cast(first_name, last_name)
+        
+        cast = Cast(_id=result, firstName=first_name, lastName=last_name)
+        
+        return CreateCast(addedCast=cast)
+
+
+class Mutations(graphene.ObjectType):
+    
+    # put the mutation into the root mutation class
+    createCast = CreateCast.Field()
+        
 
 class Query(graphene.ObjectType):
     
@@ -29,4 +57,4 @@ class Query(graphene.ObjectType):
             
         return object_types
 
-schema = graphene.Schema(query=Query)
+schema = graphene.Schema(query=Query, mutation=Mutations)

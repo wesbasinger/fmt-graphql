@@ -19,3 +19,12 @@ def get_all_cast():
         results.append(doc)
         
     return results
+    
+def add_new_cast(first_name, last_name):
+    
+    result = cast.insert_one({
+        "firstName" : first_name,
+        "lastName" : last_name
+    })
+    
+    return str(result.inserted_id)
