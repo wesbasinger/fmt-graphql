@@ -5,6 +5,6 @@ class Session(graphene.ObjectType):
      slug = graphene.String()
      show = graphene.String()
      
-     #cast = graphene.List(lambda: Cast)
+     cast = graphene.List(lambda: Cast)
 
 from cast import Cast

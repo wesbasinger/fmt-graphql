@@ -7,8 +7,8 @@ class Cast(graphene.ObjectType):
      lastName = graphene.String()
      
      sessions = graphene.List(lambda: Session)
-     # hours = graphene.List(lambda: Hours)
+     hours = graphene.List(lambda: Hours)
 
 from session import Session
-# from hours import Hours
+from hours import Hours
 

@@ -2,10 +2,30 @@
 import graphene
 
 import db
+import expand
 
 from cast import Cast
-# from hours import Hours
+from hours import Hours
 from session import Session
+
+class PunchIn(graphene.Mutation):
+    
+    newHours = graphene.Field(Hours)
+    
+    class Arguments:
+        
+        worker = graphene.String()
+        session_slug = graphene.String()
+        comment = graphene.String()
+        cast_id = graphene.String()
+        
+    def mutate(self, info, worker, session_slug, comment, cast_id):
+        
+        result = db.punch_in(worker, session_slug, comment, cast_id)
+        
+        hours=Hours(_id=result)
+        
+        return PunchIn(newHours=hours)
 
 class AddSessionToCast(graphene.Mutation):
     
@@ -43,7 +63,7 @@ class CreateCast(graphene.Mutation):
         
         result = db.add_new_cast(first_name, last_name)
         
-        cast = Cast(_id=result, firstName=first_name, lastName=last_name, sessions=[])
+        cast = Cast(_id=result, firstName=first_name, lastName=last_name, sessions=[], hours=[])
         
         return CreateCast(addedCast=cast)
 
@@ -54,6 +74,8 @@ class Mutations(graphene.ObjectType):
     createCast = CreateCast.Field()
     
     addSessionToCast = AddSessionToCast.Field()
+    
+    punchIn = PunchIn.Field()
         
 
 class Query(graphene.ObjectType):
@@ -72,18 +94,8 @@ class Query(graphene.ObjectType):
             cast_instance._id = result['_id']
             cast_instance.firstName = result['firstName']
             cast_instance.lastName = result['lastName']
-            
-            session_objects = []
-            
-            for session_slug in result['sessions']:
-                
-                session_dict = db.get_session(session_slug)
-                
-                session_objects.append(
-                    Session(slug=session_dict['slug'], show=session_dict['show'], )
-                )
-            
-            cast_instance.sessions = session_objects
+            cast_instance.sessions = expand.session_list(result['sessions'])
+            cast_instance.hours = expand.hour_list(result['hours'], result['_id'])
                 
             object_types.append(cast_instance)
             
