@@ -47,3 +47,11 @@ def add_session_to_cast(cast_id, session_slug):
         { "$push" : {"sessions" : session_slug}}
     )
     
+def get_session(session_slug):
+    
+    result = sessions.find_one({"slug" : session_slug})
+    
+    result['_id'] = str(result['_id'])
+    
+    return result
+    

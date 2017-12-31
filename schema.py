@@ -5,7 +5,7 @@ import db
 
 from cast import Cast
 # from hours import Hours
-# from session import Session
+from session import Session
 
 class AddSessionToCast(graphene.Mutation):
     
@@ -43,7 +43,7 @@ class CreateCast(graphene.Mutation):
         
         result = db.add_new_cast(first_name, last_name)
         
-        cast = Cast(_id=result, firstName=first_name, lastName=last_name)
+        cast = Cast(_id=result, firstName=first_name, lastName=last_name, sessions=[])
         
         return CreateCast(addedCast=cast)
 
@@ -73,6 +73,18 @@ class Query(graphene.ObjectType):
             cast_instance.firstName = result['firstName']
             cast_instance.lastName = result['lastName']
             
+            session_objects = []
+            
+            for session_slug in result['sessions']:
+                
+                session_dict = db.get_session(session_slug)
+                
+                session_objects.append(
+                    Session(slug=session_dict['slug'], show=session_dict['show'], )
+                )
+            
+            cast_instance.sessions = session_objects
+                
             object_types.append(cast_instance)
             
         return object_types
