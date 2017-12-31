@@ -8,24 +8,25 @@ from cast import Cast
 from hours import Hours
 from session import Session
 
-class PunchIn(graphene.Mutation):
+# class PunchIn(graphene.Mutation):
     
-    newHours = graphene.Field(Hours)
+#     newHours = graphene.Field(Hours)
     
-    class Arguments:
+#     class Arguments:
         
-        worker = graphene.String()
-        session_slug = graphene.String()
-        comment = graphene.String()
-        cast_id = graphene.String()
+#         worker = graphene.String()
+#         session_slug = graphene.String()
+#         comment = graphene.String()
+#         cast_id = graphene.String()
         
-    def mutate(self, info, worker, session_slug, comment, cast_id):
+#     def mutate(self, info, worker, session_slug, comment, cast_id):
         
-        result = db.punch_in(worker, session_slug, comment, cast_id)
+#         result = db.punchIn(worker, session_slug, comment, cast_id)
         
-        hours=Hours(_id=result)
+#         hours=Hours(_id=result)
         
-        return PunchIn(newHours=hours)
+#         return PunchIn(newHours=hours)
+        
 
 class AddSessionToCast(graphene.Mutation):
     
@@ -35,15 +36,20 @@ class AddSessionToCast(graphene.Mutation):
         
         cast_id = graphene.String()
         session_slug = graphene.String()
+        show = graphene.String()
         
-    def mutate(self, info, cast_id, session_slug):
+    def mutate(self, info, cast_id, session_slug, show):
         
-        db.add_cast_to_session(cast_id, session_slug)
-        db.add_session_to_cast(cast_id, session_slug)
+        db.add_session_to_cast(cast_id, session_slug, show)
         
-        cast=Cast(_id=cast_id)
+        cast_dict = db.get_single_cast(cast_id)
         
-        return AddSessionToCast(updatedCast=cast)
+        return AddSessionToCast(updatedCast=Cast(
+            _id=cast_id, 
+            firstName=cast_dict['firstName'], 
+            lastName=cast_dict['lastName'], 
+            sessions=expand.session_list(cast_dict['sessions'])
+        ))
         
 class CreateCast(graphene.Mutation):
     
@@ -63,7 +69,7 @@ class CreateCast(graphene.Mutation):
         
         result = db.add_new_cast(first_name, last_name)
         
-        cast = Cast(_id=result, firstName=first_name, lastName=last_name, sessions=[], hours=[])
+        cast = Cast(_id=result, firstName=first_name, lastName=last_name, sessions=[])
         
         return CreateCast(addedCast=cast)
 
@@ -75,7 +81,7 @@ class Mutations(graphene.ObjectType):
     
     addSessionToCast = AddSessionToCast.Field()
     
-    punchIn = PunchIn.Field()
+    # punchIn = PunchIn
         
 
 class Query(graphene.ObjectType):
@@ -95,10 +101,10 @@ class Query(graphene.ObjectType):
             cast_instance.firstName = result['firstName']
             cast_instance.lastName = result['lastName']
             cast_instance.sessions = expand.session_list(result['sessions'])
-            cast_instance.hours = expand.hour_list(result['hours'], result['_id'])
-                
+
             object_types.append(cast_instance)
             
         return object_types
+        
 
 schema = graphene.Schema(query=Query, mutation=Mutations)

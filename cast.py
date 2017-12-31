@@ -1,14 +1,11 @@
 # cast.py
 import graphene
 
+from session import Session
+
 class Cast(graphene.ObjectType):
      _id = graphene.String()
      firstName = graphene.String()
      lastName = graphene.String()
-     
-     sessions = graphene.List(lambda: Session)
-     hours = graphene.List(lambda: Hours)
-
-from session import Session
-from hours import Hours
+     sessions = graphene.List(Session)
 

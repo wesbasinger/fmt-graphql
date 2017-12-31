@@ -4,55 +4,32 @@ from session import Session
 from hours import Hours
 from cast import Cast
 
-def single_cast(cast_id):
-    
-    result = db.get_single_cast(cast_id)
-    
-    return Cast(_id=cast_id, firstName=result['firstName'], lastName=result['lastName'], sessions=result['sessions'], hours=result['hours'])
-
-def single_session(slug):
-    
-    session_dict = db.get_session(slug)
-    
-    return Session(slug=session_dict['slug'], show=session_dict['show'])
-
 def session_list(s_list):
 
     session_objects = []
     
-    for session_slug in s_list:
-        
-        session_dict = db.get_session(session_slug)
+    for session_dict in s_list:
         
         session_objects.append(
-            Session(slug=session_dict['slug'], show=session_dict['show'])
+            Session(slug=session_dict['slug'], show=session_dict['show'], hours=hour_list(session_dict['hours']))
         )
     
     return session_objects
     
-def hour_list(h_list, cast_id):
+def hour_list(h_list):
     
     hour_objects = []
     
-    for hour_id in h_list:
-        
-        hour_dict = db.get_hour(hour_id)
+    for hour_dict in h_list:
         
         hour_objects.append(
             Hours(
-                _id=hour_id, 
+                _id=hour_dict['_id'], 
                 worker=hour_dict['worker'], 
                 comment=hour_dict['comment'], 
                 datestamp=hour_dict['datestamp'],
                 timeIn=hour_dict['timeIn'],
-                timeOut=hour_dict['timeOut'],
-                session=single_session(hour_dict['session']),
-                cast=single_cast(cast_id))
-        )
+                timeOut=hour_dict['timeOut']
+        ))
         
     return hour_objects
-    
-
-        
-        
-        
