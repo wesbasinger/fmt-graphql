@@ -2,11 +2,36 @@
 import graphene
 
 import db
-import expand
+import make
 
-from cast import Cast
-from hours import Hours
-from session import Session
+#################################
+#        Type Defs              #
+#################################
+
+class Hours(graphene.ObjectType):
+     _id = graphene.String()
+     worker = graphene.String()
+     comment = graphene.String()
+     datestamp = graphene.String()
+     timeIn = graphene.Float()
+     timeOut = graphene.Float()
+     
+class Session(graphene.ObjectType):
+     slug = graphene.String()
+     show = graphene.String()
+     hours = graphene.List(Hours)
+
+class Cast(graphene.ObjectType):
+     _id = graphene.String()
+     firstName = graphene.String()
+     lastName = graphene.String()
+     sessions = graphene.List(Session)
+     
+
+#################################
+#        Mutations              #
+#################################
+
 
 # class PunchIn(graphene.Mutation):
     
@@ -44,12 +69,9 @@ class AddSessionToCast(graphene.Mutation):
         
         cast_dict = db.get_single_cast(cast_id)
         
-        return AddSessionToCast(updatedCast=Cast(
-            _id=cast_id, 
-            firstName=cast_dict['firstName'], 
-            lastName=cast_dict['lastName'], 
-            sessions=expand.session_list(cast_dict['sessions'])
-        ))
+        _updatedCast = make.cast(cast_dict)
+        
+        return AddSessionToCast(updatedCast=_updatedCast)
         
 class CreateCast(graphene.Mutation):
     
@@ -69,9 +91,9 @@ class CreateCast(graphene.Mutation):
         
         result = db.add_new_cast(first_name, last_name)
         
-        cast = Cast(_id=result, firstName=first_name, lastName=last_name, sessions=[])
+        new_cast = make.cast(result)
         
-        return CreateCast(addedCast=cast)
+        return CreateCast(addedCast=new_cast)
 
 
 class Mutations(graphene.ObjectType):
@@ -82,6 +104,11 @@ class Mutations(graphene.ObjectType):
     addSessionToCast = AddSessionToCast.Field()
     
     # punchIn = PunchIn
+
+
+#################################
+#        Root Query             #
+#################################
         
 
 class Query(graphene.ObjectType):
@@ -90,19 +117,11 @@ class Query(graphene.ObjectType):
     
     def resolve_all_cast(self, info):
         
-        db_results = db.get_all_cast()
-        
         object_types = []
         
         for result in db.get_all_cast():
-            
-            cast_instance = Cast()
-            cast_instance._id = result['_id']
-            cast_instance.firstName = result['firstName']
-            cast_instance.lastName = result['lastName']
-            cast_instance.sessions = expand.session_list(result['sessions'])
 
-            object_types.append(cast_instance)
+            object_types.append(make.cast(result))
             
         return object_types
         

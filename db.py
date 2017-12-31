@@ -40,7 +40,9 @@ def add_new_cast(first_name, last_name):
         "sessions" : [],
     })
     
-    return str(result.inserted_id)
+    new_id = str(result.inserted_id)
+    
+    return get_single_cast(new_id)
     
     
 def add_session_to_cast(cast_id, session_slug, show):
@@ -61,13 +63,30 @@ def get_session(session_slug):
     
 def punch_in(worker, slug, comment, cast_id):
     
+    ''' arguments:  worker, slug, comment, cast_id '''
+    
+    # cast.update_one(
+    #     {"_id" : ObjectId(cast_id)},
+    #     {
+    #         "$push" : {
+    #             "hours" : {
+    #                 "worker" : worker,
+    #                 "session" : slug,
+    #                 "comment" : comment,
+    #                 "datestamp" : str(datetime.now()),
+    #                 "timeIn" : time(),
+    #                 "timeOut" : 0
+    #             }
+    #         }
+    #     }
+    # )
+    
     cast.update_one(
-        {"_id" : ObjectId(cast_id)},
+        {"_id" : ObjectId(cast_id), "sessions.slug" : slug},
         {
             "$push" : {
-                "hours" : {
+                "sessions.$.hours" : {
                     "worker" : worker,
-                    "session" : slug,
                     "comment" : comment,
                     "datestamp" : str(datetime.now()),
                     "timeIn" : time(),
