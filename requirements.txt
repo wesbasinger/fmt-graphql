@@ -1,6 +1,7 @@
 click==6.7
 dnspython==1.15.0
 Flask==0.12.2
+Flask-Cors==3.0.3
 Flask-GraphQL==1.4.1
 graphene==2.0.1
 graphql-core==2.0
@@ -10,6 +11,7 @@ itsdangerous==0.24
 Jinja2==2.10
 MarkupSafe==1.0
 mongo==0.2.0
+pkg-resources==0.0.0
 promise==2.1
 pymongo==3.6.0
 Rx==1.6.0
