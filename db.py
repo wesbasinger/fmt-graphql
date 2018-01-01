@@ -3,11 +3,13 @@ from bson.objectid import ObjectId
 from time import time
 from datetime import datetime
 
-client = MongoClient('mongodb://admin:1@ds135547.mlab.com:35547/fmt-graphql')
+#client = MongoClient('mongodb://admin:1@ds135547.mlab.com:35547/fmt-graphql') # old mlab database
+client = MongoClient('mongodb+srv://admin:1@devops-upml5.mongodb.net/test')
 
 db = client['fmt-graphql']
 
 cast = db.cast
+hours = db.hours
 
 def get_single_cast(cast_id):
     
@@ -59,6 +61,16 @@ def punch_in(worker, slug, comment, cast_id):
     
     ''' arguments:  worker, slug, comment, cast_id '''
     
+    # make an insert into the hours collection
+    result = hours.insert_one({
+        "castId" : cast_id,
+        "worker" : worker,
+        "comment" : comment,
+        "datestamp" : str(datetime.now()),
+        "timeIn" : time(),
+        "timeOut" : 0
+    })
+    
     # find index of session doc to update
     pre_update_doc = get_single_cast(cast_id)
     
@@ -78,13 +90,7 @@ def punch_in(worker, slug, comment, cast_id):
         {"_id" : ObjectId(cast_id)},
         {
             "$push" : {
-                stem : {
-                    "worker" : worker,
-                    "comment" : comment,
-                    "datestamp" : str(datetime.now()),
-                    "timeIn" : time(),
-                    "timeOut" : 0
-                }
+                stem : str(result.inserted_id)
             }
         }
     )

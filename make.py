@@ -3,6 +3,7 @@ import schema
 def hours(data):
     
     h = schema.Hours()
+    h._id = data['_id']
     h.worker = data['worker']
     h.comment = data['comment']
     h.datestamp = data['datestamp']
@@ -16,14 +17,7 @@ def session(data):
     s = schema.Session()
     s.slug = data['slug']
     s.show = data['show']
-    
-    _hours = []
-    
-    for hour in data['hours']:
-        
-        _hours.append(hours(hour))
-        
-    s.hours = _hours
+    s.hours = data['hours']
     
     return s
     
