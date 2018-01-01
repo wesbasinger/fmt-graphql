@@ -50,42 +50,35 @@ def add_session_to_cast(cast_id, session_slug, show):
     cast.update_one(
         {"_id" : ObjectId(cast_id)},
         { "$push" : {"sessions" : {"slug" : session_slug, "show": show, "hours": []}}}
-    ) 
+    )
     
-def get_session(session_slug):
-    
-    result = sessions.find_one({"slug" : session_slug})
-    
-    result['_id'] = str(result['_id'])
-    
-    return result
+    return get_single_cast(cast_id)
     
     
 def punch_in(worker, slug, comment, cast_id):
     
     ''' arguments:  worker, slug, comment, cast_id '''
     
-    # cast.update_one(
-    #     {"_id" : ObjectId(cast_id)},
-    #     {
-    #         "$push" : {
-    #             "hours" : {
-    #                 "worker" : worker,
-    #                 "session" : slug,
-    #                 "comment" : comment,
-    #                 "datestamp" : str(datetime.now()),
-    #                 "timeIn" : time(),
-    #                 "timeOut" : 0
-    #             }
-    #         }
-    #     }
-    # )
+    # find index of session doc to update
+    pre_update_doc = get_single_cast(cast_id)
+    
+    winning_index = None
+    
+    for index, session in enumerate(pre_update_doc['sessions']):
+        
+        if session['slug'] == slug:
+            
+            winning_index = index
+            
+    stem = "sessions." + str(winning_index) + ".hours"
+    
     
     cast.update_one(
-        {"_id" : ObjectId(cast_id), "sessions.slug" : slug},
+        
+        {"_id" : ObjectId(cast_id)},
         {
             "$push" : {
-                "sessions.$.hours" : {
+                stem : {
                     "worker" : worker,
                     "comment" : comment,
                     "datestamp" : str(datetime.now()),
