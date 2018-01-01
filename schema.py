@@ -15,6 +15,7 @@ class Hours(graphene.ObjectType):
      datestamp = graphene.String()
      timeIn = graphene.Float()
      timeOut = graphene.Float()
+     castId = graphene.String()
      
 class Session(graphene.ObjectType):
      slug = graphene.String()
@@ -31,6 +32,23 @@ class Cast(graphene.ObjectType):
 #################################
 #        Mutations              #
 #################################
+
+class PunchOut(graphene.Mutation):
+    
+    newHours = graphene.Field(Hours)
+    
+    class Arguments:
+        
+        cast_id = graphene.String()
+        timeIn = graphene.Float()
+        
+    def mutate(self, info, cast_id, timeIn):
+        
+        hours_result = db.punch_out(cast_id, timeIn)
+        
+        updated_hours=make.hours(hours_result)
+        
+        return PunchOut(newHours=updated_hours)
 
 
 class PunchIn(graphene.Mutation):
@@ -104,6 +122,8 @@ class Mutations(graphene.ObjectType):
     addSessionToCast = AddSessionToCast.Field()
     
     punchIn = PunchIn.Field()
+    
+    punchOut = PunchOut.Field()
 
 
 #################################

@@ -10,6 +10,7 @@ def hours(data):
     h.datestamp = data['datestamp']
     h.timeOut = data['timeOut']
     h.timeIn = data['timeIn']
+    h.castId = data['castId']
     
     return h
 
