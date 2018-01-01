@@ -19,7 +19,7 @@ class Hours(graphene.ObjectType):
 class Session(graphene.ObjectType):
      slug = graphene.String()
      show = graphene.String()
-     hours = graphene.List(graphene.String)
+     hours = graphene.List(Hours)
 
 class Cast(graphene.ObjectType):
      _id = graphene.String()

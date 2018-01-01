@@ -1,4 +1,5 @@
 import schema
+import db
 
 def hours(data):
     
@@ -17,7 +18,14 @@ def session(data):
     s = schema.Session()
     s.slug = data['slug']
     s.show = data['show']
-    s.hours = data['hours']
+    
+    _hours = []
+    
+    for hour_id in data['hours']:
+        
+        _hours.append(hours(db.get_single_hours(hour_id)))
+        
+    s.hours = _hours
     
     return s
     

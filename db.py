@@ -104,3 +104,5 @@ def punch_in(worker, slug, comment, cast_id):
     )
     
     return get_single_hours(str(result.inserted_id))
+    
+    
