@@ -10,4 +10,4 @@ app = Flask(__name__)
 app.add_url_rule('/', view_func=view_func)
 
 if __name__ == '__main__':
-    app.run(port=8080)
+    app.run()
