@@ -33,24 +33,24 @@ class Cast(graphene.ObjectType):
 #################################
 
 
-# class PunchIn(graphene.Mutation):
+class PunchIn(graphene.Mutation):
     
-#     newHours = graphene.Field(Hours)
+    newHours = graphene.Field(Hours)
     
-#     class Arguments:
+    class Arguments:
         
-#         worker = graphene.String()
-#         session_slug = graphene.String()
-#         comment = graphene.String()
-#         cast_id = graphene.String()
+        worker = graphene.String()
+        session_slug = graphene.String()
+        comment = graphene.String()
+        cast_id = graphene.String()
         
-#     def mutate(self, info, worker, session_slug, comment, cast_id):
+    def mutate(self, info, worker, session_slug, comment, cast_id):
         
-#         result = db.punchIn(worker, session_slug, comment, cast_id)
+        hours_result = db.punch_in(worker, session_slug, comment, cast_id)
         
-#         hours=Hours(_id=result)
+        updated_hours=make.hours(hours_result)
         
-#         return PunchIn(newHours=hours)
+        return PunchIn(newHours=updated_hours)
         
 
 class AddSessionToCast(graphene.Mutation):
@@ -103,7 +103,7 @@ class Mutations(graphene.ObjectType):
     
     addSessionToCast = AddSessionToCast.Field()
     
-    # punchIn = PunchIn
+    punchIn = PunchIn.Field()
 
 
 #################################

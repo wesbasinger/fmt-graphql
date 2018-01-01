@@ -18,6 +18,14 @@ def get_single_cast(cast_id):
     result['_id'] = str(result['_id'])
     
     return result
+
+def get_single_hours(hours_id):
+    
+    result = hours.find_one({"_id": ObjectId(hours_id)})
+    
+    result['_id'] = str(result['_id'])
+    
+    return result
     
     
 def get_all_cast():
@@ -95,4 +103,4 @@ def punch_in(worker, slug, comment, cast_id):
         }
     )
     
-    return get_single_cast(cast_id)
+    return get_single_hours(str(result.inserted_id))
