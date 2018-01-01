@@ -144,6 +144,19 @@ class Query(graphene.ObjectType):
             object_types.append(make.cast(result))
             
         return object_types
+    
+    single_cast = graphene.Field(
+        Cast,
+        _id=graphene.String()
+    )
+    
+    def resolve_single_cast(self, info, _id):
+        
+        print(_id)
+        
+        result = db.get_single_cast(_id)
+        
+        return make.cast(result)
         
 
 schema = graphene.Schema(query=Query, mutation=Mutations)
