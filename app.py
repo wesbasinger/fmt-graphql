@@ -13,5 +13,5 @@ app.debug = True
 app.add_url_rule('/', view_func=view_func)
 
 if __name__ == '__main__':
-    CORS(app, resources={r'/g': {'origins': '*'}})
+    CORS(app, automatic_options=True)
     app.run()
