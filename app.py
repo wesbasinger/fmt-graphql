@@ -9,9 +9,10 @@ from schema import schema
 view_func = GraphQLView.as_view('graphql', schema=schema, graphiql=True)
 
 app = Flask(__name__)
+CORS(app)
 app.debug = True
 app.add_url_rule('/', view_func=view_func)
 
 if __name__ == '__main__':
-    CORS(app, automatic_options=True)
+    
     app.run()
