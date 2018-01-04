@@ -140,4 +140,25 @@ def deactivate(session_slug):
     
     return updated_cast
     
+def get_active_cast():
+    
+    cursor = cast.aggregate([
+        { "$unwind" : "$sessions"},
+        { "$match" : {"sessions.active" : True}}
+    ])
+    
+    results = []
+    
+    for doc in cursor:
+        
+        doc['_id'] = str(doc['_id'])
+        
+        doc['sessions'] = [doc['sessions']]
+        
+        results.append(doc)
+        
+    return results
+    
+    
+    
     

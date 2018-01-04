@@ -159,5 +159,17 @@ class Query(graphene.ObjectType):
         
         return make.cast(result)
         
+    active_cast = graphene.List(Cast)
+    
+    def resolve_active_cast(self, info):
+        
+        _all_cast = []
+        
+        for result in db.get_active_cast():
+            
+            _all_cast.append(make.cast(result))
+            
+        return _all_cast
+        
 
 schema = graphene.Schema(query=Query, mutation=Mutations)
