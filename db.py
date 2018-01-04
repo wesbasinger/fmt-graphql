@@ -129,4 +129,31 @@ def punch_out(cast_id, timeIn):
     
     return result
     
+def get_sessions():
     
+    cursor = cast.aggregate([
+        {
+            "$unwind" : "$sessions"
+        },
+        {
+            "$group" : {
+                "_id" : None, 
+                "sessions" : {
+                    "$addToSet" : {
+                        "session":{ 
+                            "slug": "$sessions.slug", 
+                            "show": "$sessions.show",
+                            "hours" : "$sessions.hours"
+                        }}}}}
+    ])
+    
+    results = []
+    
+    for array in cursor:
+        
+        for session in array['sessions']:
+            
+            results.append(session['session'])
+    # return the first doc and pull sessions off
+        
+    return results

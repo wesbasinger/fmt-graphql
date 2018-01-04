@@ -157,6 +157,22 @@ class Query(graphene.ObjectType):
         result = db.get_single_cast(_id)
         
         return make.cast(result)
+
+    sessions = graphene.List(Session)
+    
+    def resolve_sessions(self, info):
+        
+        sessions = graphene.List(Session)
+        
+        results = db.get_sessions()
+        
+        _sessions = []
+        
+        for _session in results:
+            
+            _sessions.append(make.session(_session))
+        
+        return _sessions
         
 
 schema = graphene.Schema(query=Query, mutation=Mutations)
