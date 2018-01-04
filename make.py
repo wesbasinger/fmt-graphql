@@ -19,6 +19,7 @@ def session(data):
     s = schema.Session()
     s.slug = data['slug']
     s.show = data['show']
+    s.active = data['active']
     
     _hours = []
     

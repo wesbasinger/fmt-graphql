@@ -59,7 +59,7 @@ def add_session_to_cast(cast_id, session_slug, show):
     
     cast.update_one(
         {"_id" : ObjectId(cast_id)},
-        { "$push" : {"sessions" : {"slug" : session_slug, "show": show, "hours": []}}}
+        { "$push" : {"sessions" : {"slug" : session_slug, "show": show, "hours": [], "active": True}}}
     )
     
     return get_single_cast(cast_id)
@@ -129,31 +129,15 @@ def punch_out(cast_id, timeIn):
     
     return result
     
-def get_sessions():
+def deactivate(session_slug):
     
-    cursor = cast.aggregate([
-        {
-            "$unwind" : "$sessions"
-        },
-        {
-            "$group" : {
-                "_id" : None, 
-                "sessions" : {
-                    "$addToSet" : {
-                        "session":{ 
-                            "slug": "$sessions.slug", 
-                            "show": "$sessions.show",
-                            "hours" : "$sessions.hours"
-                        }}}}}
-    ])
+    cast.update_many(
+        {"sessions.slug":session_slug}, 
+        { "$set" : {"sessions.$.active": False}}
+    )
     
-    results = []
+    updated_cast = get_all_cast()
     
-    for array in cursor:
-        
-        for session in array['sessions']:
-            
-            results.append(session['session'])
-    # return the first doc and pull sessions off
-        
-    return results
+    return updated_cast
+    
+    
