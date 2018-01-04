@@ -65,7 +65,7 @@ def add_session_to_cast(cast_id, session_slug, show):
     return get_single_cast(cast_id)
     
     
-def punch_in(worker, slug, comment, cast_id):
+def punch_in(worker, slug, comment, cast_id, remote):
     
     ''' arguments:  worker, slug, comment, cast_id '''
     
@@ -76,7 +76,8 @@ def punch_in(worker, slug, comment, cast_id):
         "comment" : comment,
         "datestamp" : str(datetime.now()),
         "timeIn" : time(),
-        "timeOut" : 0
+        "timeOut" : 0,
+        "remote" : remote
     })
     
     # find index of session doc to update

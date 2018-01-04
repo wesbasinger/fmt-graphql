@@ -11,6 +11,7 @@ def hours(data):
     h.timeOut = data['timeOut']
     h.timeIn = data['timeIn']
     h.castId = data['castId']
+    h.remote = data['remote']
     
     return h
 

@@ -16,6 +16,7 @@ class Hours(graphene.ObjectType):
      timeIn = graphene.Float()
      timeOut = graphene.Float()
      castId = graphene.String()
+     remote = graphene.Boolean()
      
 class Session(graphene.ObjectType):
      slug = graphene.String()
@@ -62,10 +63,11 @@ class PunchIn(graphene.Mutation):
         session_slug = graphene.String()
         comment = graphene.String()
         cast_id = graphene.String()
+        remote = graphene.Boolean()
         
-    def mutate(self, info, worker, session_slug, comment, cast_id):
+    def mutate(self, info, worker, session_slug, comment, cast_id, remote):
         
-        hours_result = db.punch_in(worker, session_slug, comment, cast_id)
+        hours_result = db.punch_in(worker, session_slug, comment, cast_id, remote)
         
         updated_hours=make.hours(hours_result)
         
