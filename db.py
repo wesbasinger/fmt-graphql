@@ -106,12 +106,12 @@ def punch_in(worker, slug, comment, cast_id, remote):
     
     return get_single_hours(str(result.inserted_id))
 
-def punch_out(cast_id, timeIn):
+def punch_out(hours_id):
     
     ''' arguments:  worker, slug, comment, cast_id '''
     
     hours.update_one(
-        {"timeIn" : timeIn, "castId" : cast_id},
+        {"_id" : ObjectId(hours_id)},
         {
             "$set" : {
                 "timeOut" : time()
@@ -119,16 +119,7 @@ def punch_out(cast_id, timeIn):
         }
     )
     
-    result = hours.find_one(
-        {
-            "castId" : cast_id,
-            "timeIn" : timeIn,
-        }
-    )
-    
-    result['_id'] = str(result['_id'])
-    
-    return result
+    return get_single_hours(hours_id)
     
 def deactivate(session_slug):
     

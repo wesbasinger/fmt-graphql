@@ -41,12 +41,11 @@ class PunchOut(graphene.Mutation):
     
     class Arguments:
         
-        cast_id = graphene.String()
-        timeIn = graphene.Float()
+        hours_id = graphene.String()
         
-    def mutate(self, info, cast_id, timeIn):
+    def mutate(self, info, hours_id):
         
-        hours_result = db.punch_out(cast_id, timeIn)
+        hours_result = db.punch_out(hours_id)
         
         updated_hours=make.hours(hours_result)
         
