@@ -160,6 +160,20 @@ def get_active_cast():
         
     return results
     
+def get_sign_ins():
+    
+    cursor = hours.find({"timeOut" : 0})
+    
+    results = []
+    
+    for doc in cursor:
+        
+        doc['_id'] = str(doc['_id'])
+        
+        results.append(doc)
+        
+    return results
+    
     
     
     

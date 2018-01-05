@@ -173,5 +173,17 @@ class Query(graphene.ObjectType):
             
         return _all_cast
         
+    sign_ins = graphene.List(Hours)
+    
+    def resolve_sign_ins(self, info):
+        
+        _all_hours = []
+        
+        for result in db.get_sign_ins():
+            
+            _all_hours.append(make.hours(result))
+            
+        return _all_hours
+        
 
 schema = graphene.Schema(query=Query, mutation=Mutations)
