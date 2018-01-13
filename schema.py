@@ -152,9 +152,9 @@ class Query(graphene.ObjectType):
         id=graphene.String()
     )
     
-    def resolve_single_cast(self, info, _id):
+    def resolve_single_cast(self, info, id):
         
-        result = db.get_single_cast(_id)
+        result = db.get_single_cast(id)
         
         return make.cast(result)
         
