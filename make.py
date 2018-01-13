@@ -4,7 +4,7 @@ import db
 def hours(data):
     
     h = schema.Hours()
-    h._id = data['_id']
+    h.id = data['_id']
     h.worker = data['worker']
     h.comment = data['comment']
     h.datestamp = data['datestamp']
@@ -18,6 +18,7 @@ def hours(data):
 def session(data):
     
     s = schema.Session()
+    s.id = data['slug']
     s.slug = data['slug']
     s.show = data['show']
     s.active = data['active']
@@ -35,7 +36,7 @@ def session(data):
 def cast(data):
     
     c = schema.Cast()
-    c._id = data['_id']
+    c.id = data['_id']
     c.firstName = data['firstName']
     c.lastName = data['lastName']
     

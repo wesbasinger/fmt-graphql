@@ -9,7 +9,7 @@ import make
 #################################
 
 class Hours(graphene.ObjectType):
-     _id = graphene.String()
+     id = graphene.String()
      worker = graphene.String()
      comment = graphene.String()
      datestamp = graphene.String()
@@ -25,7 +25,7 @@ class Session(graphene.ObjectType):
      active = graphene.Boolean()
 
 class Cast(graphene.ObjectType):
-     _id = graphene.String()
+     id = graphene.String()
      firstName = graphene.String()
      lastName = graphene.String()
      sessions = graphene.List(Session)
@@ -149,12 +149,10 @@ class Query(graphene.ObjectType):
     
     single_cast = graphene.Field(
         Cast,
-        _id=graphene.String()
+        id=graphene.String()
     )
     
     def resolve_single_cast(self, info, _id):
-        
-        print(_id)
         
         result = db.get_single_cast(_id)
         
